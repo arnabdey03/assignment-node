@@ -4,6 +4,7 @@
   "description": "This is a assignment project made with node js, express, jwt and mysql.",
   "main": "index.js",
   "scripts": {
+    "devStart": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +17,15 @@
   "bugs": {
     "url": "https://github.com/arnabdey03/assignment-node/issues"
   },
-  "homepage": "https://github.com/arnabdey03/assignment-node#readme"
+  "homepage": "https://github.com/arnabdey03/assignment-node#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "md5": "^2.3.0",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
 }
