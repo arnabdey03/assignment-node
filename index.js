@@ -19,16 +19,13 @@ function connectDatabase(){
 
 	conn.connect((err) => {
 		if(err) console.log(err)
-		console.log("connected")
 	})
 }
 
 connectDatabase()
 
 function checkIfUserAlreadyExists(req,res,next){
-	let userName = req.body.fullName
 	let userEmail = req.body.email
-	let userPassword = req.body.password;
 
 	let findUser = `SELECT count(*) as count FROM users WHERE email="${userEmail}"`;
 
@@ -38,18 +35,42 @@ function checkIfUserAlreadyExists(req,res,next){
 				"error": err
 			})
 		}
-		console.log(result)
+		
 		if (result[0].count == 0){
-			console.log("not found")
 			next()
 		}
 		else{
-			console.log("found")
 			res.status(200).send({
 				"message": "User already exists with this email."
 			})
 		}
 	})
+}
+
+function checkAuthorizationToken(req,res,next){
+	const authHeader = req.headers.authorization
+	const authToken = authHeader && authHeader.split(" ")[1]
+	
+	if(authToken == null){
+		return res.status(401).send({
+			success: false,
+			message: "Unauthorized To Access."
+		})
+	}
+
+	jwt.verify(authToken, process.env.AUTHORIZATION_TOKEN_SECRET, (err,user) => {
+		
+		if(err) {
+			return res.status(403).send({
+				success: false,
+				message: "Forbidden Access"
+			})
+		}
+		
+		req.user = user
+		next()
+	})
+
 }
 
 app.post("/signup", checkIfUserAlreadyExists, async (req,res) => {
@@ -70,7 +91,6 @@ app.post("/signup", checkIfUserAlreadyExists, async (req,res) => {
 
 	try{
 		const hashedPassword = await bcrypt.hash(userPassword,10);
-		console.log(hashedPassword)
 
 		let createUser = `INSERT INTO users(name,email,password) VALUES ("${userName}","${userEmail}","${hashedPassword}"
 		)`;
@@ -81,8 +101,8 @@ app.post("/signup", checkIfUserAlreadyExists, async (req,res) => {
 					"error": err
 				})
 			}
-			console.log(result)
-			let authorizationToken = jwt.sign({ userEmail }, process.env.AUTHORIZATION_TOKEN_SECRET, { expiresIn: 600 })
+			
+			let authorizationToken = jwt.sign({ email:userEmail,id:result.insertId }, process.env.AUTHORIZATION_TOKEN_SECRET, { expiresIn: 20 })
 
 			res.status(201).send({
 				"message": "New user created.",
@@ -118,7 +138,7 @@ app.post("/login", (req,res) => {
 		})
 	}
 	else{
-		let getUserDetails = `SELECT id,name,password FROM users WHERE email="${userEmail}"`;
+		let getUserDetails = `SELECT id,name,email,password FROM users WHERE email="${userEmail}"`;
 
 		conn.query(getUserDetails, async (err,result) => {
 
@@ -128,21 +148,101 @@ app.post("/login", (req,res) => {
 				})
 			}
 
-			try{
-				if(await bcrypt.compare(userPassword, result[0].password)){
-					res.send("user exists")
+			if(result.length > 0){
+
+				try{
+					if(await bcrypt.compare(userPassword, result[0].password)){
+	
+						let authorizationToken = jwt.sign({ userEmail }, process.env.AUTHORIZATION_TOKEN_SECRET, { expiresIn: 15 })
+						
+						res.status(200).send({
+							success: true,
+							userID: result[0].id,
+							authorizationToken
+						})
+					}
+					else{
+						res.status(401).send({
+							success: false,
+							message: "Incorrect Password"
+						})
+					}
 				}
-				else{
-					res.send("incorrect password")
+				catch{
+					res.status(500).send({
+						error: err
+					})
 				}
 			}
-			catch{
-				res.send("error")
+			else{
+				res.status(404).send({
+					success: false,
+					message: "Email Not Found"
+				})
 			}
 
 		})
 	}
 
+})
+
+app.post("/add-product", checkAuthorizationToken, async (req,res) => {
+
+	const productName = req.body.productName
+	const productPrice = req.body.productPrice
+	const productDescription = req.body.productDescription
+	const userID = req.body.userID
+
+	console.log(req.user)
+
+	let fetchUserName = `SELECT name FROM users WHERE id=${userID}`
+
+	// await conn.query(fetchUserName, (err,result) => {
+
+	// 	if(err){
+	// 		res.status(500).send({
+	// 			error: err
+	// 		})
+	// 	}
+
+	// 	if(result.length > 0 ){
+	// 		const userName = result[0].name
+	// 		res.send(userName)
+	// 	}
+	// })
+
+	let addNewProduct = `INSERT INTO products (name,price,description,add_by_user) VALUES ("${productName}","${productPrice}","${productDescription}","${userID}")`
+
+	await conn.query(addNewProduct, (err,result) => {
+
+		if(err){
+			res.status(500).send({
+				error: error
+			})
+		}
+
+		if(result.affectedRows > 0){
+			res.send(result)
+		}
+	})
+})
+
+app.get("/products", (req,res) => {
+	let getAllProducts = "SELECT p.id AS product_id,p.name AS product_name,p.price As product_price,p.description AS product_description,u.name AS user_name FROM products AS p LEFT JOIN users AS u ON p.add_by_user = u.id ORDER BY product_id"
+
+	conn.query(getAllProducts, (err,result) => {
+
+		if(err){
+			res.status(500).send({
+				error: err
+			})
+		}
+
+		if(result.length > 0){
+			res.send(result)
+		}
+
+	})
 })
 
 app.get("/test", (req,res) => {

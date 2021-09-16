@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
 	"fullName": "arnab",
-	"email": "test13@test.com",
+	"email": "test21@test.com",
 	"password": "test"
 }
 
@@ -13,6 +13,31 @@ POST http://localhost:3000/login HTTP/1.1
 Content-Type: application/json
 
 {
-	"email": "test13@test.com",
-	"password": "test1"
+	"email": "test14@test.com",
+	"password": "test"
+}
+
+###
+
+POST http://localhost:3000/add-product HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0MTRAdGVzdC5jb20iLCJpYXQiOjE2MzE4MjE2NzcsImV4cCI6MTYzMTgyMTY5Mn0.5Qe3BympV229bF83YT-RgZw9DQkB3JkQU5KCT2EqefA
+
+{
+	"productName": "bike",
+	"productDescription": "This is a demo bike",
+	"productPrice": 500,
+	"userID": 14
+}
+###
+
+GET http://localhost:3000/products HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0MTRAdGVzdC5jb20iLCJpYXQiOjE2MzE4MjE2NzcsImV4cCI6MTYzMTgyMTY5Mn0.5Qe3BympV229bF83YT-RgZw9DQkB3JkQU5KCT2EqefA
+
+{
+	"productName": "bike",
+	"productDescription": "This is a demo bike",
+	"productPrice": 500,
+	"userID": 14
 }
