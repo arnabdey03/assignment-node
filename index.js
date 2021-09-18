@@ -29,8 +29,7 @@ connectDatabase()
 app.post("/signup", checkIfUserAlreadyExists, async (req,res) => {
 	const userName = req.body.fullName
 	const userEmail = req.body.email
-	const userPassword = req.body.password;
-	const confirmPassword = req.body.confirmPassword
+	const userPassword = req.body.password
 
 	// let findUser = `SELECT count(*) as count FROM users WHERE email="${userEmail}"`;
 
@@ -42,13 +41,6 @@ app.post("/signup", checkIfUserAlreadyExists, async (req,res) => {
 	// 	}
 	// 	console.log(result)
 	// 	if (result[0].count == 0){
-
-	if(userPassword != confirmPassword){
-		return res.status(401).send({
-			status: false,
-			"message": "Both the passwords should be same"
-		})
-	}
 
 	try{
 		const hashedPassword = await bcrypt.hash(userPassword,10);
@@ -116,16 +108,17 @@ app.post("/login", (req,res) => {
 				try{
 					if(await bcrypt.compare(userPassword, result[0].password)){
 	
-						let authorizationToken = jwt.sign({ userEmail }, process.env.AUTHORIZATION_TOKEN_SECRET, { expiresIn: 15 })
+						let authorizationToken = jwt.sign({ userEmail }, process.env.AUTHORIZATION_TOKEN_SECRET, { expiresIn: 60 })
 						
 						res.status(200).send({
 							success: true,
+							message: "Logged in successfully.",
 							userID: result[0].id,
 							authorizationToken
 						})
 					}
 					else{
-						res.status(401).send({
+						res.status(200).send({
 							success: false,
 							message: "Incorrect Password"
 						})
@@ -317,6 +310,14 @@ app.delete("/delete-product", (req,res) => {
 				message: "Product deleted successfully."
 			})
 		}
+	})
+})
+
+app.get("/check-token", checkAuthorizationToken, (req,res) => {
+
+	res.status(200).send({
+		success: true,
+		message: "User token is valid."
 	})
 })
 
