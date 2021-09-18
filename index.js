@@ -118,7 +118,7 @@ app.post("/login", (req,res) => {
 						})
 					}
 					else{
-						res.status(200).send({
+						res.status(401).send({
 							success: false,
 							message: "Incorrect Password"
 						})
@@ -142,7 +142,7 @@ app.post("/login", (req,res) => {
 
 })
 
-app.post("/add-product", checkAuthorizationToken, async (req,res) => {
+app.post("/add-product", async (req,res) => {
 
 	const productName = req.body.productName
 	const productPrice = req.body.productPrice
@@ -176,7 +176,10 @@ app.post("/add-product", checkAuthorizationToken, async (req,res) => {
 		}
 
 		if(result.affectedRows > 0){
-			res.send(result)
+			res.status(200).send({
+				success: true,
+				message: "Product Added Successfully."
+			})
 		}
 	})
 })
@@ -202,8 +205,8 @@ app.get("/products", (req,res) => {
 			})
 		}
 		
-		if(result[0].count > 0){
-			totalProducts = result[0].count
+		if(await result[0].count > 0){
+			totalProducts = await result[0].count
 		}
 	})
 
@@ -219,11 +222,20 @@ app.get("/products", (req,res) => {
 
 		if(await result.length > 0){
 
-			products = result
+			products = await result
+
+		}
+
+		if(totalProducts && products.length){
 
 			res.status(200).send({
 				totalProducts,
 				products
+			})
+		}
+		else{
+			res.status(404).send({
+				message: "No products found"
 			})
 		}
 
@@ -231,9 +243,9 @@ app.get("/products", (req,res) => {
 })
 
 app.get("/search-product", (req,res) => {
-	const productID = req.query.productID
+	const productName = req.query.productName
 
-	let findProduct = `SELECT * FROM products WHERE id = ${productID}`
+	let findProduct = `SELECT p.id AS product_id,p.name AS product_name,p.price As product_price,p.description AS product_description,u.name AS user_name FROM products AS p LEFT JOIN users AS u ON p.add_by_user = u.id WHERE p.name LIKE "%${productName}%" ORDER BY product_id`
 
 	conn.query(findProduct, (err,result) => {
 
@@ -243,16 +255,10 @@ app.get("/search-product", (req,res) => {
 			})
 		}
 		
-		if(result[0] != null){
+		if(result.length){
 			return res.status(200).send({
 				success: true,
-				data:{
-					productID: result[0].id,
-					pdroductName: result[0].name,
-					pdroductPrice: result[0].price,
-					productDescription: result[0].description,
-					addedByUser: result[0].add_by_user
-				}
+				data: result
 			})
 		}
 		else{

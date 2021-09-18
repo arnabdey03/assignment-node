@@ -13,7 +13,7 @@ POST http://localhost:8000/login HTTP/1.1
 Content-Type: application/json
 
 {
-	"email": "test14@test.com",
+	"email": "teat@test.com",
 	"password": "test"
 }
 
@@ -50,7 +50,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8000/search-product?productID=1 HTTP/1.
+GET http://localhost:8000/search-product?productName=bike HTTP/1.
 
 ###
 
@@ -60,4 +60,4 @@ DELETE http://localhost:8000/delete-product?productID=2 HTTP/1.
 
 GET http://localhost:8000/check-token HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0MTRAdGVzdC5jb20iLCJpYXQiOjE2MzE5NjQ0NTMsImV4cCI6MTYzMTk2NDUxM30.HwjDlis4ghmrgwyjWaCI2RxmXqGS--J_jXIFZlHFDe4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0MTRAdGVzdC5jb20iLCJpYXQiOjE2MzE5NjQ1NzMsImV4cCI6MTYzMTk2NDYzM30.a7YutnKH_1a91UmyG_OzEfynP15NX92ht8AgPyC7jso
