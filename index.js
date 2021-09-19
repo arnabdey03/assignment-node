@@ -1,7 +1,6 @@
 require('dotenv').config()
 const express = require("express")
 const app = express()
-const port = 8000
 const jwt = require("jsonwebtoken")
 const mysql = require("mysql")
 const bcrypt = require("bcrypt")
@@ -11,6 +10,7 @@ app.use(express.json())
 
 var conn;
 
+//database connection function start
 function connectDatabase() {
 	conn = mysql.createConnection({
 		host: `${process.env.DB_HOST}`,
@@ -23,9 +23,12 @@ function connectDatabase() {
 		if (err) console.log(err)
 	})
 }
+//database connection function end
 
+//connection database once at top, also can be connected inside every endpoint
 connectDatabase()
 
+//signup request start
 app.post("/signup", checkIfUserAlreadyExists, async (req, res) => {
 	const userName = req.body.fullName
 	const userEmail = req.body.email
@@ -65,7 +68,9 @@ app.post("/signup", checkIfUserAlreadyExists, async (req, res) => {
 	}
 
 })
+//signup request end
 
+//login request start
 app.post("/login", (req, res) => {
 	const userEmail = req.body.email
 	const userPassword = req.body.password
@@ -124,7 +129,9 @@ app.post("/login", (req, res) => {
 	}
 
 })
+//login request start
 
+//add-product request start
 app.post("/add-product", checkAuthorizationToken, async (req, res) => {
 
 	const productName = req.body.productName
@@ -152,7 +159,9 @@ app.post("/add-product", checkAuthorizationToken, async (req, res) => {
 		}
 	})
 })
+//signup request end
 
+//get all products from database request start
 app.get("/products", checkAuthorizationToken, (req, res) => {
 	const page = parseInt(req.query.page)
 	const limit = parseInt(req.query.limit)
@@ -210,7 +219,9 @@ app.get("/products", checkAuthorizationToken, (req, res) => {
 
 	})
 })
+//get all products from database request end
 
+//search product request start
 app.get("/search-product", checkAuthorizationToken, (req, res) => {
 	const productName = req.query.productName
 
@@ -239,7 +250,9 @@ app.get("/search-product", checkAuthorizationToken, (req, res) => {
 		}
 	})
 })
+//search product request end
 
+//update product request start
 app.put("/update-product", checkAuthorizationToken, (req, res) => {
 	const productID = req.body.productID
 	const productName = req.body.productName
@@ -267,7 +280,9 @@ app.put("/update-product", checkAuthorizationToken, (req, res) => {
 		}
 	})
 })
+//update request end
 
+//delete product request start
 app.delete("/delete-product", checkAuthorizationToken, (req, res) => {
 	const productID = req.query.productID
 
@@ -295,7 +310,9 @@ app.delete("/delete-product", checkAuthorizationToken, (req, res) => {
 		}
 	})
 })
+//delete request end
 
+//token validation checking request start
 app.get("/check-token", checkAuthorizationToken, (req, res) => {
 
 	res.status(200).send({
@@ -303,6 +320,10 @@ app.get("/check-token", checkAuthorizationToken, (req, res) => {
 		message: "User Token Is Valid."
 	})
 })
+//token validation checking request end
+
+//checking if the email given at signup is already present in db for a existing user start.
+//this function is also used as a middleware for signup
 
 function checkIfUserAlreadyExists(req, res, next) {
 	let userEmail = req.body.email
@@ -327,6 +348,10 @@ function checkIfUserAlreadyExists(req, res, next) {
 		}
 	})
 }
+//end of checking if user already exists
+
+//authorization token checking function start
+//used as a middleware for every other route
 
 function checkAuthorizationToken(req, res, next) {
 	const authHeader = req.headers.authorization
@@ -353,8 +378,9 @@ function checkAuthorizationToken(req, res, next) {
 	})
 
 }
+//authorization token checking function start
 
-app.listen(port, (error) => {
+app.listen(process.env.SERVER_PORT, (error) => {
 	if (error) console.log(error)
 	console.log(`Server Is Running At Port ${process.env.SERVER_PORT}`)
 })
