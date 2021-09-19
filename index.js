@@ -306,14 +306,20 @@ app.delete("/delete-product", (req,res) => {
 
 		if(err) {
 			return res.status(500).send({
-				error: err
+				error: "something went wrong."
 			})
 		}
-
-		if(result){
+		
+		if(result.affectedRows){
 			res.status(200).send({
 				success: true,
 				message: "Product deleted successfully."
+			})
+		}
+		else{
+			res.status(404).send({
+				success: false,
+				message: "Product not found."
 			})
 		}
 	})
