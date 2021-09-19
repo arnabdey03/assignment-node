@@ -13,7 +13,7 @@ POST http://localhost:8000/login HTTP/1.1
 Content-Type: application/json
 
 {
-	"email": "teat@test.com",
+	"email": "test@test.com",
 	"password": "test"
 }
 
@@ -31,14 +31,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0Z
 }
 ###
 
-GET http://localhost:8000/products?page=1&limit=5 HTTP/1.1
-Content-Type: application/json
+GET http://localhost:8000/products?page=100&limit=5 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0MTRAdGVzdC5jb20iLCJpYXQiOjE2MzE4MjE2NzcsImV4cCI6MTYzMTgyMTY5Mn0.5Qe3BympV229bF83YT-RgZw9DQkB3JkQU5KCT2EqefA
 
 ###
 
 PUT http://localhost:8000/update-product HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUz1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0MjAxQHRlc3QuY29tIiwiaWF0IjoxNjMyMDYzNjk4LCJleHAiOjE2MzIwNjk2OTh9.RprTIrH3xi4dRwbyRTuET1oys0vmMfXV5etQxRVuvTs
 
 {
 	"productID": 1,
@@ -50,14 +50,13 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8000/search-product?productName=pala HTTP/1.
+GET http://localhost:8000/search-product?productName=car HTTP/1.
 
 ###
 
-DELETE http://localhost:8000/delete-product?productID= HTTP/1.
-
+DELETE http://localhost:8000/delete-product?productID=50 HTTP/1.
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwiaWF0IjoxNjMyMDY2NjM5LCJleHAiOjE2MzIwNzI2Mzl9.Itp0fELJuVK4sNQ9eCWSN-pTI7GyGIzgzmGLt2rEj4Q
 ###
 
 GET http://localhost:8000/check-token HTTP/1.1
-Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0MTRAdGVzdC5jb20iLCJpYXQiOjE2MzE5NjQ1NzMsImV4cCI6MTYzMTk2NDYzM30.a7YutnKH_1a91UmyG_OzEfynP15NX92ht8AgPyC7jso
