@@ -7,4 +7,6 @@ Also please update AUTHORIZATION_TOKEN_SECRET value with a more secure and compl
 
 The database I used in my local system is present in the assignment.sql file, feel free to use that or you can also use own database and tables and map those accordingly with the app.
 
+A request.rest file is also added for reference, I used it for testing the APIs with the Rest Client extension on VS Code
+
 Thanks..
