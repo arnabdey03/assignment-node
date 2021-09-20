@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
 	"fullName": "arnab",
-	"email": "test312@test.com",
+	"email": "testaaedff2@test.com",
 	"password": "test"
 }
 
@@ -24,14 +24,14 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0MTRAdGVzdC5jb20iLCJpYXQiOjE2MzE5NjQ1MjksImV4cCI6MTYzMTk2NDU4OX0.d4hTaEofkF1EEKwtoVxAsVSxSJja25LHsEJMWTRbRJU
 
 {
-	"productName": "bike",
-	"productDescription": "This is a demo bike",
-	"productPrice": 500,
-	"userID": 14
+	"productName": "Inverter",
+	"productDescription": "This a basic inverter description",
+	"productPrice": 20000,
+	"userID": 2
 }
 ###
 
-GET http://localhost:8000/products?page=100&limit=5 HTTP/1.1
+GET http://localhost:8000/products?page=10&limit=5 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0MTRAdGVzdC5jb20iLCJpYXQiOjE2MzE4MjE2NzcsImV4cCI6MTYzMTgyMTY5Mn0.5Qe3BympV229bF83YT-RgZw9DQkB3JkQU5KCT2EqefA
 
 ###
